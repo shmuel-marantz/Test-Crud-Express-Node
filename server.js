@@ -107,7 +107,9 @@ app.post("/users/tickets/buy", async (req, res) => {
       return res.json({ msg: "The password is incorrect" });
     }
     const events = await readEvents();
-    const event = events.find((e) => e.eventName === req.body.eventName.toLowerCase());
+    const event = events.find(
+      (e) => e.eventName === req.body.eventName.toLowerCase()
+    );
 
     if (req.body.quantity > event.ticketsForSale) {
       return res.json({ msg: "תפסת מרובה לא תפסת" });
@@ -133,25 +135,36 @@ app.post("/users/tickets/buy", async (req, res) => {
   }
 });
 
-
 app.get("/users/:username/summary", async (req, res) => {
   try {
     const { username } = req.params;
-const  receipts = await readReceipts();
-const  userReceipts = receipts.filter((r) => {r.username = username})
+    const receipts = await readReceipts();
+    const userReceipts = receipts.filter((r) => {
+      r.username = username;
+    });
+    const userEvents = [];
+    userReceipts.forEach((r) => {
+      const validation = userEvents.find((a) => a == r.eventName);
+      if (!validation) {
+        userEvents.push(r.eventName);
+      } });
+      userEvents.forEach((e) => {
 
 
+        
+      })
 
-    const todo = todos.find((t) => t.id === intId);
-    if (!todo) {
-      res.status(404).json({ success: false, data: {} });
-    } else {
-      res.status(200).json({ success: true, data: todo });
-    }
+  
+    //   res.status(200).json({ success: true, data:  });
+    
   } catch (error) {
     res.status(500).json({ success: false, data: error.message });
   }
 });
+
+
+
+
 
 
 
