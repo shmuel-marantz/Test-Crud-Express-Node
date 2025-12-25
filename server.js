@@ -107,7 +107,7 @@ app.post("/users/tickets/buy", async (req, res) => {
       return res.json({ msg: "The password is incorrect" });
     }
     const events = await readEvents();
-    const event = events.find((e) => e.eventName === req.body.eventName);
+    const event = events.find((e) => e.eventName === req.body.eventName.toLowerCase());
 
     if (req.body.quantity > event.ticketsForSale) {
       return res.json({ msg: "תפסת מרובה לא תפסת" });
@@ -117,7 +117,7 @@ app.post("/users/tickets/buy", async (req, res) => {
 
     const newReceipt = {
       username: req.body.username,
-      eventName: req.body.eventName,
+      eventName: req.body.eventName.toLowerCase(),
       ticketsBought: req.body.quantity,
     };
     receipts.push(newReceipt);
@@ -132,6 +132,29 @@ app.post("/users/tickets/buy", async (req, res) => {
     res.status(500).json({ msg: "error" + err.message, data: null });
   }
 });
+
+
+app.get("/users/:username/summary", async (req, res) => {
+  try {
+    const { username } = req.params;
+const  receipts = await readReceipts();
+const  userReceipts = receipts.filter((r) => {r.username = username})
+
+
+
+    const todo = todos.find((t) => t.id === intId);
+    if (!todo) {
+      res.status(404).json({ success: false, data: {} });
+    } else {
+      res.status(200).json({ success: true, data: todo });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, data: error.message });
+  }
+});
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
